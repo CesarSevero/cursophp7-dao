@@ -1,50 +1,95 @@
 <?php
 
-class Sql extends PDO {
+class Usuario {
 
-	private $conn;
+    private $idusuario;
+    private $deslogin;
+    private $dessenha;
+    private $dtcadastro;
 
-	public function __construct(){
+    public function getIdusuario(){
 
-		$this->conn = new PDO("mysql:host=localhost;dbname=dbphp7", "root", "");
-	}
+        return $this->idusuario;
 
-	private function setParams($statment, $parameters = array()){
+    }
 
-		foreach ($parameters as $key => $value) {
+    public function setIdusuario($value){
 
-			$this->setParam($kei, $value);
-			
-		}
+        $this->idusuario = $value;
 
-	}
+    }
 
-	private function setParam($statment, $key, $value){
+    public function getDeslogin(){
 
-		$statment->bindParam($key, $value);
+        return $this->deslogin;
 
-	}
+    }
 
-	public function query($rawQuery, $params = array()){
+    public function setDeslogin($value){
 
-		$stmt = $this->conn->prepare($rawQuery);
+        $this->deslogin = $value;
 
-		$this->setParams($stmt, $params);
+    }
 
-		$stmt->execute();
+    public function getDessenha(){
 
-		return $stmt;
-		
-	}
+        return $this->dessenha;
 
-	public function select($rawQuery, $params = array()):array
-	{
+    }
 
-		$stmt = $this->query($rawQuery, $params);
+    public function setDessenha($value){
 
-		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->dessenha = $value;
 
-	}
+    }
+
+    public function getDtcadastro(){
+
+        return $this->dtcadastro;
+
+    }
+
+    public function setDtcadastro($value){
+
+        $this->dtcadastro = $value;
+
+    }
+
+    public function loadById($id){
+
+        $sql = new Sql();
+
+        $results = $sql->select("SELECT * FROM tb_usuarios WHERE idusuario = :ID", array(
+
+            ":ID"=>$id
+
+        ));
+
+        if (count($results) > 0) {
+
+            $row = $results[0];
+
+            $this->setIdusuario($row['idusuario']);
+            $this->setDeslogin($row['deslogin']);
+            $this->setDessenha($row['dessenha']);
+            $this->setDtcadastro(new DateTime($row['dtcadastro']));
+
+        }
+
+    }
+
+    public function __toString(){
+
+        return json_encode(array(
+
+            "idusuario"=>$this->getIdusuario(),
+            "deslogin"=>$this->getDeslogin(),
+            "dessenha"=>$this->getDessenha(),
+            "dtcadastro"=>$this->getDtcadastro()->format("d/m/Y H:i:s")
+
+        ));
+
+    }
 
 }
 
