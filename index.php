@@ -21,10 +21,7 @@ require_once("config.php");
 //$usuario->login("Helena", "122004");
 //echo $usuario;
 
-$aluno = new Usuario();
-
-$aluno->setDeslogin("fryda");
-$aluno->setDessenha("biscoito");
+$aluno = new Usuario("ricardo", "@#4567");
 
 $aluno->insert();
 
